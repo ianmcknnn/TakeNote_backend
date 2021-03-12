@@ -1,6 +1,7 @@
 class PagesController < ApplicationController
     def index
-        @pages = Page.all
+        @pages = Page.all.order(:pageNumber)
+        render json: @pages
     end
 
     def show
@@ -16,7 +17,8 @@ class PagesController < ApplicationController
     end
 
     def create
-        @page = Page.new(page_params)
+        @journal = Journal.find(params[:journalId])
+        @page = Page.new(pageContent: params[:pageText], journal_id: params[:journalId], pageNumber: @journal.number)
 
         if @page.save
             render json: @page
@@ -28,7 +30,7 @@ class PagesController < ApplicationController
     def update
         @page = Page.find(params[:id])
 
-        if @page.update(page_params)
+        if @page.update(pageContent: params[:pageText], label: params[:label])
             render json: @page
         else
             render json: {err: 'update failed'}
@@ -44,6 +46,6 @@ class PagesController < ApplicationController
 
     private
         def page_params
-            params.require(:pageNumber).permit(:label)
+            
         end
 end

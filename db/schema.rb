@@ -44,15 +44,20 @@ ActiveRecord::Schema.define(version: 2020_11_19_234734) do
 
   create_table "journals", force: :cascade do |t|
     t.string "title"
+    t.bigint "user_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_id"], name: "index_journals_on_user_id"
   end
 
   create_table "pages", force: :cascade do |t|
     t.integer "pageNumber"
     t.string "label"
+    t.string "pageContent"
+    t.bigint "journal_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["journal_id"], name: "index_pages_on_journal_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -63,4 +68,6 @@ ActiveRecord::Schema.define(version: 2020_11_19_234734) do
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "journals", "users"
+  add_foreign_key "pages", "journals"
 end
